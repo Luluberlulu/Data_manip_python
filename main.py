@@ -5,11 +5,12 @@ import plotly.express as px
 st.set_page_config(page_title="Meteo Seconde guerre mondiale", layout="wide", initial_sidebar_state="expanded")
 
 @st.cache_data
+#nettoyage des données
 def load_data():
     df_weather = pd.read_csv('sumweather.csv', low_memory=False)
     df_stations = pd.read_csv('weatherstation.csv')
     df_final = pd.merge(df_weather, df_stations, left_on='STA', right_on='WBAN')
-    df_final['Precip'] = pd.to_numeric(df_final['Precip'].replace('T', '0'), errors='coerce').fillna(0)
+    df_final['Precip'] = pd.to_numeric(df_final['Precip'].replace('T', '0'), errors='coerce').fillna(0) # t= pluie trop faible pour etre mesuree donc =0 
     df_final['Date'] = pd.to_datetime(df_final['Date'], errors='coerce')
     
     if 'Latitude' in df_final.columns and 'Longitude' in df_final.columns:
@@ -25,17 +26,17 @@ df = df.assign(Temp_Amplitude=df.apply(lambda x: x['MaxTemp'] - x['MinTemp'], ax
 pays_disponibles = sorted(df['STATE/COUNTRY ID'].dropna().unique())
 
 with st.sidebar:
-    st.title("Filtres d'analyse")
-    pays_selectionnes = st.multiselect("Selectionner un ou plusieurs pays", pays_disponibles)
+    st.title("Filtres ")
+    pays_selectionnes = st.multiselect("Selectionner un ou + pays", pays_disponibles)
     
     min_date_globale = df['Date'].min().date()
     max_date_globale = df['Date'].max().date()
     
-    st.write("Periode temporelle (Saisie au clavier)")
-    col_d1, col_d2 = st.columns(2)
-    with col_d1:
+    st.write("Periode temporelle :")
+    start, stop = st.columns(2)
+    with start:
         start_date_input = st.date_input("Date de debut", min_date_globale, min_value=min_date_globale, max_value=max_date_globale)
-    with col_d2:
+    with stop:
         end_date_input = st.date_input("Date de fin", max_date_globale, min_value=min_date_globale, max_value=max_date_globale)
 
 start_date = pd.to_datetime(start_date_input)
@@ -62,15 +63,15 @@ else:
 st.title("Tableau de Bord Meteorologique WW2")
 st.markdown(f"**{titre_dashboard}** | Periode : {start_date_input} au {end_date_input}")
 
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric("Temperature Moyenne", f"{df_filtre['MeanTemp'].mean():.1f} C")
-with col2:
-    st.metric("Precipitations Totales", f"{df_filtre['Precip'].sum():.1f} mm")
-with col3:
-    st.metric("Ecart Type (Temp)", f"{df_filtre['MeanTemp'].std():.2f}")
-with col4:
-    st.metric("Releves totaux", f"{len(df_filtre)}")
+meanTemp, sumPrecip, stdTemp, lenTotal = st.columns(4)
+with meanTemp:
+    st.metric("Temperature moyenne", f"{df_filtre['MeanTemp'].mean():.1f} C")
+with sumPrecip:
+    st.metric("Precipitations totales de pluie", f"{df_filtre['Precip'].sum():.1f} mm")
+with stdTemp:
+    st.metric("Ecart type de la température", f"{df_filtre['MeanTemp'].std():.2f}")
+with lenTotal:
+    st.metric("Releves total des stations", f"{len(df_filtre)}")
 
 st.markdown("---")
 
