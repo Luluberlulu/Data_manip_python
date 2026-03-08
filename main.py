@@ -28,12 +28,18 @@ with st.sidebar:
     st.title("Filtres d'analyse")
     pays_selectionnes = st.multiselect("Selectionner un ou plusieurs pays", pays_disponibles)
     
-    min_date = df['Date'].min().date()
-    max_date = df['Date'].max().date()
-    date_range = st.slider("Periode temporelle", min_date, max_date, (min_date, max_date))
+    min_date_globale = df['Date'].min().date()
+    max_date_globale = df['Date'].max().date()
+    
+    st.write("Periode temporelle (Saisie au clavier)")
+    col_d1, col_d2 = st.columns(2)
+    with col_d1:
+        start_date_input = st.date_input("Date de debut", min_date_globale, min_value=min_date_globale, max_value=max_date_globale)
+    with col_d2:
+        end_date_input = st.date_input("Date de fin", max_date_globale, min_value=min_date_globale, max_value=max_date_globale)
 
-start_date = pd.to_datetime(date_range[0])
-end_date = pd.to_datetime(date_range[1])
+start_date = pd.to_datetime(start_date_input)
+end_date = pd.to_datetime(end_date_input)
 mask_date = (df['Date'] >= start_date) & (df['Date'] <= end_date)
 df_temp = df.loc[mask_date]
 
@@ -54,7 +60,7 @@ else:
     titre_dashboard = "Analyse globale (Moyenne Mondiale)"
 
 st.title("Tableau de Bord Meteorologique WW2")
-st.markdown(f"**{titre_dashboard}** | Periode : {date_range[0]} au {date_range[1]}")
+st.markdown(f"**{titre_dashboard}** | Periode : {start_date_input} au {end_date_input}")
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
@@ -172,3 +178,9 @@ if not df_extremes.empty:
         st.info("Aucune vague prolongee enregistree sur cette selection.")
 else:
     st.info("Aucun jour extreme enregistre.")
+
+st.markdown("---")
+st.subheader("Donnees Brutes")
+st.markdown("Ce tableau affiche les donnees filtrees par pays, date et selection sur la carte. Vous pouvez cliquer sur les colonnes pour trier manuellement.")
+df_brut = df_filtre.sort_values(by=['STATE/COUNTRY ID', 'Date'])
+st.dataframe(df_brut, use_container_width=True)
