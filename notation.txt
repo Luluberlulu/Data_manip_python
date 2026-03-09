@@ -1,0 +1,34 @@
+Utilisation des fonctionnalités de pandas
+groupby (0.5)
+sum (0.5) moyenne (0.5) et écart type (0.5)
+value_counts (0.5)
+Dérivation de nouvelles colonnes à partir de colonnes existantes (0.5)
+apply ou map (0.5)
+assign (0.5)
+3 Graphiques de types différents (courbe, histrogramme, etc.)(3)
+
+=6/7
+
+Streamlit
+Interface jolie et fonctionnelle (1,5)
+Interface interactive (1,5)
+Application déployée sur internet (1)
+
+=4/4
+
+Présentation:
+Présentation et Démo fluide (1)
+Présentation des résultats sous forme d'une inforgraphie (peut être réalisée avec un outil de dessin) (2)
+Réponse aux questions du prof (3)
+Fonctionnalités supplémentaire ou intéressantes (1)
+
+2/5
+
+Générations avec NotebookLM (2 points): 
+2 infographies sur des thèmes différentes
+2 rapports vidéo sur des thèmes différents
+1 résumé audio
+
+=2
+
+=14/10
